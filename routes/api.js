@@ -6,7 +6,6 @@ router.get('/recipes', function(req, res, next) {
   db.Recipes.findAll({
     include: [{
       model: db.Categories,
-      as: 'cats',
       through: {
         attributes: []
       }
@@ -63,5 +62,19 @@ router.post('/recipes', (req, res) => {
     })
 })
 
+router.delete('/recipes/:id', (req, res) => {
+  db.Recipes.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(number => {
+      if (number > 0) {
+        res.status(204).json({});
+      } else {
+        res.json({error: `could not find recipe with ID: ${req.params.id}`})
+      }
+    })
+})
 
 module.exports = router;
